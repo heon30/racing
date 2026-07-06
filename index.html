@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>삼각비 익스트림 점프러너</title>
+<style>
+:root{--panel:rgba(10,18,30,.9);--text:#fff;--accent:#ffd84a;--good:#62e88d;--bad:#ff6464;--blue:#64d6ff}*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#07121e;color:var(--text);font-family:Arial,"Noto Sans KR",sans-serif;touch-action:none}canvas{display:block;width:100%;height:100%}button,input{font:inherit}.hidden{display:none!important}.screen{position:fixed;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;padding:18px;background:radial-gradient(circle at 50% 12%,rgba(89,201,255,.24),rgba(7,15,28,.86) 55%,rgba(2,5,12,.96))}.panel{width:min(94vw,820px);max-height:92vh;overflow:auto;background:var(--panel);border:3px solid rgba(255,255,255,.18);border-radius:22px;padding:24px;box-shadow:0 22px 80px rgba(0,0,0,.5)}h1{margin:0 0 8px;font-size:clamp(31px,6.8vw,58px);line-height:1.05}.subtitle{margin:0 0 16px;color:#dbeeff;font-weight:800;line-height:1.45}.ruleGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0}.ruleGrid div{background:rgba(255,255,255,.08);border-radius:14px;padding:12px;text-align:center;font-weight:900;line-height:1.38}.mainbtn,.subbtn,.choiceBtn{border:0;border-radius:14px;padding:13px 16px;font-weight:1000;cursor:pointer}.mainbtn{width:100%;background:var(--accent);color:#1c1900;font-size:21px;box-shadow:0 5px 0 #9d7b00;margin-top:12px}.mainbtn:active{transform:translateY(3px);box-shadow:0 2px 0 #9d7b00}.subbtn{background:#eaf3f8;color:#142434}.tips{font-size:13px;line-height:1.6;color:#d9e8f6;margin:14px 0 0}.recordBox{margin:12px 0;padding:12px 14px;border:1px solid rgba(255,216,74,.35);background:rgba(255,216,74,.1);border-radius:14px;font-weight:900}.nameInput{width:100%;border:2px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff;border-radius:14px;padding:13px 14px;font-weight:900;margin:8px 0 4px;outline:none}.nameInput:focus{border-color:var(--accent)}.rankBox{margin:12px 0;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:12px}.rankTitle{font-weight:1000;color:#fff4a6;margin-bottom:8px}.rankRow{display:grid;grid-template-columns:38px 1fr 82px 64px;gap:8px;align-items:center;padding:7px 0;border-top:1px solid rgba(255,255,255,.09);font-size:14px;font-weight:900}.rankRow:first-of-type{border-top:0}.rankName{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rankDist{color:#62e88d;text-align:right}.rankMeta{color:#b9cce0;text-align:right;font-size:12px}.saveStatus{font-size:13px;color:#b9cce0;margin-top:8px;text-align:center;font-weight:800}#hud{position:fixed;inset:0;pointer-events:none;z-index:12}.topbar{position:absolute;left:12px;right:12px;top:10px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.hudbox{background:rgba(0,0,0,.56);border:2px solid rgba(255,255,255,.17);border-radius:14px;padding:9px 12px;box-shadow:0 8px 24px rgba(0,0,0,.25);backdrop-filter:blur(5px)}#phaseTitle{font-size:15px;font-weight:1000;color:#dcecff}#mainTime{font-size:30px;font-weight:1000;color:#fff4a6;margin-top:1px}#stats{font-size:14px;font-weight:900;line-height:1.48;text-align:right;min-width:150px}#progressWrap{position:absolute;left:50%;top:17px;transform:translateX(-50%);width:min(44vw,470px);height:15px;border:2px solid rgba(255,255,255,.24);border-radius:999px;background:rgba(0,0,0,.48);overflow:hidden}#progress{height:100%;width:0;background:linear-gradient(90deg,#5ee48a,#ffe15a,#ff7c5d)}#message{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);font-size:clamp(40px,9vw,92px);font-weight:1000;text-align:center;white-space:nowrap;text-shadow:0 5px 0 #111b2b,0 12px 36px rgba(0,0,0,.55)}#toast{position:absolute;left:50%;bottom:126px;transform:translateX(-50%);background:rgba(0,0,0,.73);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:10px 18px;font-weight:900;opacity:0;transition:opacity .18s;white-space:nowrap}#toast.show{opacity:1}#quizPanel{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:25;width:min(94vw,780px);background:rgba(7,14,28,.94);border:3px solid rgba(100,214,255,.4);border-radius:22px;padding:18px;box-shadow:0 22px 75px rgba(0,0,0,.55)}.quizTop{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:10px;font-weight:1000}#quizTime{font-size:28px;color:#fff4a6}.quizBody{display:grid;grid-template-columns:minmax(230px,330px) 1fr;gap:14px;align-items:center}#triangleBox{background:#f8fbff;border-radius:16px;padding:8px}#triangleSvg{width:100%;height:220px;display:block}#question{font-size:28px;font-weight:1000;line-height:1.25;margin:8px 0 14px}.choices{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.choiceBtn{background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.2);color:white;min-height:92px;font-size:26px}.choiceBtn:hover{border-color:var(--accent);background:rgba(255,216,74,.16)}.choiceBtn:disabled{opacity:.48;cursor:not-allowed;filter:grayscale(.25)}.choiceBtn.correctFlash{background:rgba(98,232,141,.35);border-color:var(--good)}.choiceBtn.wrongFlash{background:rgba(255,100,100,.35);border-color:var(--bad)}.frac{display:inline-flex;flex-direction:column;align-items:center;line-height:1;vertical-align:middle;font-weight:1000}.frac .top{border-bottom:3px solid currentColor;padding:0 7px 4px}.frac .bot{padding:4px 7px 0}#runnerIntro{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:24;width:min(92vw,560px);background:rgba(8,15,28,.92);border:3px solid rgba(255,216,74,.44);border-radius:22px;padding:24px;text-align:center;box-shadow:0 22px 70px rgba(0,0,0,.48)}#runnerIntro h2{margin:0 0 8px;font-size:34px}#runnerIntro .big{font-size:56px;color:var(--accent);font-weight:1000;margin:8px 0}#mobileControls{position:fixed;inset:0;z-index:20;pointer-events:none;display:none}.ctrl{position:absolute;border:3px solid rgba(255,255,255,.5);background:rgba(255,255,255,.22);color:#fff;font-weight:1000;pointer-events:auto;user-select:none;touch-action:none}#joystickBase{position:absolute;left:28px;bottom:30px;width:150px;height:150px;border-radius:50%;border:4px solid rgba(255,255,255,.5);background:rgba(8,18,32,.42);box-shadow:inset 0 0 35px rgba(100,214,255,.14),0 10px 30px rgba(0,0,0,.28);pointer-events:auto;touch-action:none}#joystickBase::before,#joystickBase::after{content:"";position:absolute;background:rgba(255,255,255,.14);pointer-events:none}#joystickBase::before{left:50%;top:10%;bottom:10%;width:2px;transform:translateX(-50%)}#joystickBase::after{top:50%;left:10%;right:10%;height:2px;transform:translateY(-50%)}#joystickKnob{position:absolute;left:50%;top:50%;width:66px;height:66px;border-radius:50%;transform:translate(-50%,-50%);background:radial-gradient(circle at 35% 30%,#d9f6ff,#62cfff 58%,#237cad);border:4px solid rgba(255,255,255,.72);box-shadow:0 8px 18px rgba(0,0,0,.38);pointer-events:none}#jumpBtn{right:30px;bottom:46px;width:104px;height:104px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff29c,#ffd84a 58%,#d29b00);color:#2a2100;font-size:20px;box-shadow:0 8px 0 rgba(130,91,0,.7),0 14px 28px rgba(0,0,0,.3)}#jumpBtn:active{transform:translateY(5px);box-shadow:0 3px 0 rgba(130,91,0,.7),0 8px 18px rgba(0,0,0,.3)}.resultGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:14px 0}.resultGrid div{background:rgba(255,255,255,.08);border-radius:14px;padding:14px;text-align:center;font-weight:900}.resultGrid b{display:block;font-size:24px;color:#fff4a6;margin-top:5px}@media(hover:none),(pointer:coarse){#mobileControls{display:block}}@media(max-width:760px){.ruleGrid{grid-template-columns:1fr 1fr}.quizBody{grid-template-columns:1fr}#triangleSvg{height:170px}#question{font-size:22px}.choiceBtn{min-height:70px;font-size:22px}.topbar{top:7px;left:7px;right:7px}.hudbox{padding:7px 9px;border-radius:10px}#mainTime{font-size:24px}#stats{font-size:12px;min-width:118px}#progressWrap{top:66px;width:72vw}#toast{bottom:132px}}
+</style>
+</head>
+<body>
+<div id="game"></div>
+<div id="hud" class="hidden"><div class="topbar"><div class="hudbox"><div id="phaseTitle">문제 풀이</div><div id="mainTime">30.00</div></div><div id="progressWrap"><div id="progress"></div></div><div id="stats" class="hudbox">정답 <b id="correctCount">0</b>개<br>거리 <b id="distanceNow">0m</b><br>최고 <b id="bestNow">0m</b></div></div><div id="message"></div><div id="toast"></div></div>
+<div id="menu" class="screen"><div class="panel"><h1>📐 삼각비 익스트림 점프러너</h1><p class="subtitle">30초 동안 삼각비 문제를 풀고, 맞힌 문제 1개당 <b>5초</b>의 러너 시간을 얻습니다. 러너 맵은 작은 블록을 계속 점프해서 건너가는 극상 난이도 맵이며, 기록은 <b>간 거리 m</b>입니다.</p><div class="ruleGrid"><div>① 30초<br>문제 풀이</div><div>② 정답 1개<br>+5초</div><div>③ 블록 점프<br>극상 맵</div><div>④ 간 거리<br>m 기록</div></div><div class="recordBox">🏆 이 기기 최고기록: <span id="menuBest">0m</span></div><input id="nickname" class="nameInput" maxlength="12" placeholder="닉네임 입력" value="도전자"><div id="menuRanking" class="rankBox"><div class="rankTitle">🌐 Firebase TOP10 랭킹</div><div class="rankMeta" style="text-align:left">불러오는 중...</div></div><button id="startBtn" class="mainbtn">게임 시작</button><p class="tips">문제는 직각삼각형 그림을 보고 <b>sin A, cos A, tan A</b> 값을 고르는 3지선다입니다. 보기들은 반드시 세 변의 길이를 조합한 분수로만 나옵니다. 오답 시 3초 동안 다음 답을 누를 수 없습니다.<br>러너 조작: PC는 <b>W/↑ 전진, A/D 또는 ←/→ 좌우, Space 점프</b> · 태블릿은 왼쪽 조이스틱으로 이동, 오른쪽 JUMP 버튼으로 점프<br>※ ↑/W를 누르면 상단에 '전진' 표시가 뜨고 앞으로 이동합니다.</p></div></div>
+<div id="quizPanel" class="hidden"><div class="quizTop"><div>📐 30초 문제 풀이</div><div id="quizTime">30.00</div></div><div class="quizBody"><div id="triangleBox"><svg id="triangleSvg" viewBox="0 0 320 210"></svg></div><div><div id="question">그림에서 sin A의 값은?</div><div id="choices" class="choices"></div></div></div></div>
+<div id="runnerIntro" class="hidden"><h2>러너 시간 획득!</h2><div class="big" id="earnedTime">0초</div><p>작은 블록을 뛰어넘으며 최대한 멀리 가세요.<br>떨어지면 시작 지점으로 돌아오지만, 남은 시간 동안 계속 도전할 수 있습니다.</p><button id="runnerStartBtn" class="mainbtn">러너 시작</button></div>
+<div id="result" class="screen hidden"><div class="panel"><h1 style="text-align:center">기록 측정 완료!</h1><div class="resultGrid"><div>맞힌 문제 수<b id="resultCorrect">0개</b></div><div>획득 시간<b id="resultTimeEarned">0초</b></div><div>이번 기록<b id="resultDistance">0m</b></div><div>최고 기록<b id="resultBest">0m</b></div></div><div id="rankStatus" class="saveStatus">랭킹 저장 준비 중...</div><div id="resultRanking" class="rankBox"><div class="rankTitle">🌐 Firebase TOP10 랭킹</div><div class="rankMeta" style="text-align:left">불러오는 중...</div></div><button id="retryBtn" class="mainbtn">다시 도전</button><button id="homeBtn" class="subbtn" style="width:100%;margin-top:10px">처음 화면</button></div></div>
+<div id="mobileControls" class="hidden"><div id="joystickBase" aria-label="이동 조이스틱"><div id="joystickKnob"></div></div><button id="jumpBtn" class="ctrl">JUMP</button></div>
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js';
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js';
+import { getAnalytics, isSupported as analyticsSupported } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-analytics.js';
+import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit, serverTimestamp, deleteDoc, doc } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBst4rfRAPutbrbzyTNziHo3FpXBTMGFxY",
+  authDomain: "wolf-bb13c.firebaseapp.com",
+  projectId: "wolf-bb13c",
+  storageBucket: "wolf-bb13c.firebasestorage.app",
+  messagingSenderId: "99437231073",
+  appId: "1:99437231073:web:01a6e3bc498959916bf0a0",
+  measurementId: "G-MKBGY2HZJ9"
+};
+const app = initializeApp(firebaseConfig);
+analyticsSupported().then(ok=>{if(ok)getAnalytics(app)}).catch(()=>{});
+const db = getFirestore(app);
+const RANK_COLLECTION = 'trigExtremeJumpRunnerTop10';
+const SAVE_KEY='trigExtremeJumpRunnerBestM_v1',PLAYER_HALF={x:.42,y:.88,z:.42},GRAVITY=23.5,MAX_SEGMENTS=82;
+const $=id=>document.getElementById(id);const ui={menu:$('menu'),hud:$('hud'),quizPanel:$('quizPanel'),quizTime:$('quizTime'),triangleSvg:$('triangleSvg'),question:$('question'),choices:$('choices'),runnerIntro:$('runnerIntro'),earnedTime:$('earnedTime'),result:$('result'),phaseTitle:$('phaseTitle'),mainTime:$('mainTime'),correctCount:$('correctCount'),distanceNow:$('distanceNow'),bestNow:$('bestNow'),progress:$('progress'),message:$('message'),toast:$('toast'),menuBest:$('menuBest'),nickname:$('nickname'),menuRanking:$('menuRanking'),rankStatus:$('rankStatus'),resultRanking:$('resultRanking'),resultCorrect:$('resultCorrect'),resultTimeEarned:$('resultTimeEarned'),resultDistance:$('resultDistance'),resultBest:$('resultBest'),mobileControls:$('mobileControls')};
+const game={state:'menu',quizTime:30,runnerTime:0,runnerRemaining:0,correct:0,currentProblem:null,distance:0,best:Number(localStorage.getItem(SAVE_KEY)||0),respawnCooldown:0,quizLocked:false,nickname:'도전자',lastSafe:{x:0,y:1.6,z:0}};
+
+function cleanName(){
+  return (ui.nickname?.value||'도전자').trim().replace(/[<>]/g,'').slice(0,12)||'도전자';
+}
+function rankFallback(msg){
+  return `<div class="rankMeta" style="text-align:left">${msg}</div>`;
+}
+function renderRanking(rows, target){
+  if(!target)return;
+  if(!rows.length){
+    target.innerHTML='<div class="rankTitle">🌐 Firebase TOP10 랭킹</div>'+rankFallback('아직 저장된 기록이 없습니다.');
+    return;
+  }
+  target.innerHTML='<div class="rankTitle">🌐 Firebase TOP10 랭킹</div>'+rows.map((r,i)=>`
+    <div class="rankRow">
+      <div>${i+1}위</div>
+      <div class="rankName">${r.name||'도전자'}</div>
+      <div class="rankDist">${Math.floor(r.distance||0)}m</div>
+      <div class="rankMeta">${r.correct||0}문제</div>
+    </div>`).join('');
+}
+async function loadRanking(){
+  try{
+    const q=query(collection(db,RANK_COLLECTION),orderBy('distance','desc'),limit(10));
+    const snap=await getDocs(q);
+    const rows=snap.docs.map(d=>d.data()).sort((a,b)=>(b.distance||0)-(a.distance||0)||(b.correct||0)-(a.correct||0)||(a.timeEarned||0)-(b.timeEarned||0)).slice(0,10);
+    renderRanking(rows,ui.menuRanking);
+    renderRanking(rows,ui.resultRanking);
+  }catch(err){
+    console.warn(err);
+    renderRanking([],ui.menuRanking);
+    if(ui.resultRanking)ui.resultRanking.innerHTML='<div class="rankTitle">🌐 Firebase TOP10 랭킹</div>'+rankFallback('랭킹을 불러오지 못했습니다. Firestore 규칙을 확인하세요.');
+  }
+}
+async function pruneRankings(){
+  try{
+    const snap=await getDocs(query(collection(db,RANK_COLLECTION),orderBy('distance','desc')));
+    const docs=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.distance||0)-(a.distance||0)||(b.correct||0)-(a.correct||0)||(a.createdAt?.seconds||0)-(b.createdAt?.seconds||0));
+    const extra=docs.slice(10);
+    await Promise.all(extra.map(r=>deleteDoc(doc(db,RANK_COLLECTION,r.id))));
+  }catch(err){
+    console.warn('TOP10 정리 실패',err);
+  }
+}
+async function submitRank(){
+  const dist=Math.floor(game.distance);
+  if(ui.rankStatus)ui.rankStatus.textContent='랭킹 저장 중...';
+  try{
+    await addDoc(collection(db,RANK_COLLECTION),{
+      name:cleanName(),
+      distance:dist,
+      correct:game.correct,
+      timeEarned:game.runnerTime,
+      createdAt:serverTimestamp()
+    });
+    await pruneRankings();
+    await loadRanking();
+    if(ui.rankStatus)ui.rankStatus.textContent='Firebase 랭킹 저장 완료';
+  }catch(err){
+    console.warn(err);
+    if(ui.rankStatus)ui.rankStatus.textContent='랭킹 저장 실패: Firestore 규칙을 확인하세요.';
+    await loadRanking();
+  }
+}
+
+const P_TRIPLES=[{a:3,b:4,c:5},{a:5,b:12,c:13},{a:8,b:15,c:17},{a:7,b:24,c:25},{a:9,b:40,c:41},{a:6,b:8,c:10},{a:10,b:24,c:26},{a:12,b:16,c:20},{a:15,b:20,c:25},{a:20,b:21,c:29},{a:11,b:60,c:61},{a:28,b:45,c:53},{a:33,b:56,c:65}];
+function gcd(a,b){while(b){[a,b]=[b,a%b]}return a}function reduce(n,d){const g=gcd(Math.abs(n),Math.abs(d));return [n/g,d/g]}function fkey(f){return reduce(f[0],f[1]).join('/')}function ftxt(f){const r=reduce(f[0],f[1]);return `${r[0]}/${r[1]}`}function fhtml(f){const r=Array.isArray(f)?reduce(f[0],f[1]):reduce(...f.split('/').map(Number));return `<span class="frac"><span class="top">${r[0]}</span><span class="bot">${r[1]}</span></span>`}function shuffle(arr){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function makeProblem(){const t=P_TRIPLES[Math.floor(Math.random()*P_TRIPLES.length)],type=['sin','cos','tan'][Math.floor(Math.random()*3)];let correct;if(type==='sin')correct=[t.a,t.c];if(type==='cos')correct=[t.b,t.c];if(type==='tan')correct=[t.a,t.b];const candidates=[[t.a,t.b],[t.b,t.a],[t.a,t.c],[t.c,t.a],[t.b,t.c],[t.c,t.b]].map(x=>reduce(x[0],x[1]));const used=new Set([fkey(correct)]),options=[reduce(correct[0],correct[1])];for(const f of shuffle(candidates)){if(!used.has(fkey(f))){used.add(fkey(f));options.push(f)}if(options.length===3)break}return{triple:t,type,correct:reduce(correct[0],correct[1]),options:shuffle(options)}}
+function drawTriangle(p){const{a,b,c}=p.triple;ui.triangleSvg.innerHTML=`<rect x="0" y="0" width="320" height="210" rx="18" fill="#f8fbff"/><path d="M58 165 L255 165 L255 38 Z" fill="#e9f4ff" stroke="#17233a" stroke-width="5" stroke-linejoin="round"/><path d="M233 165 L233 143 L255 143" fill="none" stroke="#17233a" stroke-width="4"/><text x="39" y="190" font-size="30" font-weight="900" fill="#17233a">A</text><text x="265" y="37" font-size="30" font-weight="900" fill="#17233a">B</text><text x="265" y="190" font-size="30" font-weight="900" fill="#17233a">C</text><text x="143" y="194" font-size="28" font-weight="900" fill="#1367b8">${b}</text><text x="268" y="108" font-size="28" font-weight="900" fill="#1367b8">${a}</text><text x="139" y="93" font-size="28" font-weight="900" fill="#d94c45" transform="rotate(-31 139 93)">${c}</text><path d="M82 164 A28 28 0 0 1 73 143" fill="none" stroke="#ff8a00" stroke-width="4"/><text x="90" y="153" font-size="20" font-weight="900" fill="#ff8a00">A</text><text x="14" y="24" font-size="16" font-weight="900" fill="#526070">∠C = 90°</text>`}
+function renderProblem(){
+  if(game.state!=='quiz')return;
+  game.quizLocked=false;
+  const p=makeProblem();
+  game.currentProblem=p;
+  drawTriangle(p);
+  ui.question.innerHTML=`그림에서 <b>${p.type} A</b>의 값은?`;
+  ui.choices.innerHTML=p.options.map((f,i)=>`<button class="choiceBtn" data-i="${i}">${fhtml(f)}</button>`).join('');
+  let responded=false;
+  ui.choices.querySelectorAll('button').forEach(btn=>{
+    btn.onclick=()=>{
+      if(game.state!=='quiz'||responded||game.quizLocked)return;
+      responded=true;
+      const all=[...ui.choices.querySelectorAll('button')];
+      all.forEach(b=>b.disabled=true);
+      const pick=p.options[Number(btn.dataset.i)];
+      const ok=fkey(pick)===fkey(p.correct);
+      if(ok){
+        game.correct++;
+        btn.classList.add('correctFlash');
+        toast('정답! 러너 시간 +5초');
+        updateHud();
+        setTimeout(()=>{if(game.state==='quiz')renderProblem()},145);
+      }else{
+        game.quizLocked=true;
+        btn.classList.add('wrongFlash');
+        ui.question.innerHTML=`오답! 정답은 ${fhtml(p.correct)}<br><span style="font-size:18px;color:#ffb3b3">3초 동안 응답할 수 없습니다.</span>`;
+        toast('오답! 3초간 응답 불가',3.0);
+        updateHud();
+        setTimeout(()=>{if(game.state==='quiz')renderProblem()},3000);
+      }
+    };
+  });
+}
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x82d8ff);scene.fog=new THREE.Fog(0x82d8ff,55,185);const camera=new THREE.PerspectiveCamera(65,innerWidth/innerHeight,.1,500);const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio,1.25));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=false;$('game').appendChild(renderer.domElement);scene.add(new THREE.HemisphereLight(0xf4fbff,0x5d4630,2.1));const sun=new THREE.DirectionalLight(0xffffff,2.25);sun.position.set(-28,42,-18);sun.castShadow=false;scene.add(sun);
+const mats={start:new THREE.MeshLambertMaterial({color:0x54b768}),block:new THREE.MeshLambertMaterial({color:0x516b83}),block2:new THREE.MeshLambertMaterial({color:0x708294}),ice:new THREE.MeshPhongMaterial({color:0xa7eaff,shininess:110,transparent:true,opacity:.9}),danger:new THREE.MeshLambertMaterial({color:0xe95454}),moving:new THREE.MeshPhongMaterial({color:0xffd84a,shininess:70}),vanish:new THREE.MeshLambertMaterial({color:0x9864ff}),checkpoint:new THREE.MeshPhongMaterial({color:0x62e88d,emissive:0x0b421e}),player:new THREE.MeshLambertMaterial({color:0xffd84a}),black:new THREE.MeshLambertMaterial({color:0x1d2430}),red:new THREE.MeshLambertMaterial({color:0xff5f5f}),blue:new THREE.MeshLambertMaterial({color:0x58c7ff}),orange:new THREE.MeshLambertMaterial({color:0xff9f39})};
+let world=new THREE.Group();scene.add(world);let platforms=[],hazards=[];function cube(x,y,z,w,h,d,mat,parent=world,cast=true){const mesh=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);mesh.position.set(x,y,z);mesh.castShadow=false;mesh.receiveShadow=false;parent.add(mesh);return mesh}function addPlatform(x,y,z,w,h,d,mat,opts={}){const mesh=cube(x,y,z,w,h,d,mat,world,opts.cast!==false);if(opts.transparent){mesh.material=mat.clone();mesh.material.transparent=true;mesh.material.opacity=opts.opacity??.85}const p={mesh,x,y,z,w,h,d,original:{x,y,z},moving:opts.moving||null,vanish:opts.vanish||null,ice:!!opts.ice,lastPos:new THREE.Vector3(x,y,z),delta:new THREE.Vector3()};platforms.push(p);return p}function addHazard(x,y,z,w,h,d,mat,opts={}){const mesh=cube(x,y,z,w,h,d,mat,world,true);const hzd={mesh,x,y,z,w,h,d,original:{x,y,z},moving:opts.moving||null,rot:opts.rot||null};hazards.push(hzd);return hzd}function clearWorld(){scene.remove(world);world=new THREE.Group();scene.add(world);platforms=[];hazards=[]}
+function buildJumpMap(){clearWorld();addPlatform(0,0,0,10,1,12,mats.start);for(let i=0;i<6;i++){cube(-7,1.5,i*2-4,.3,3,.3,mats.checkpoint,world,false);cube(7,1.5,i*2-4,.3,3,.3,mats.checkpoint,world,false)}let z=12,x=0;const patterns=['straight','side','tiny','movingX','stairs','thin','vanish','zigzag','movingY','ice','split','highlow','bars'];for(let i=0;i<MAX_SEGMENTS;i++){const ptype=patterns[i%patterns.length],difficulty=Math.min(1,i/55);let gap=4.0+difficulty*1.6,w=3.8-difficulty*.9,d=3.6-difficulty*.9,y=Math.sin(i*.55)*.45;if(ptype==='straight'){x+=(Math.random()-.5)*2.2;addPlatform(x,y,z,w,1,d,mats.block);z+=d+gap}else if(ptype==='side'){x=(i%2===0?-3.0:3.0)+(Math.random()-.5)*.7;addPlatform(x,y,z,w,1,d,mats.block2);z+=d+gap+.2}else if(ptype==='tiny'){for(let k=0;k<3;k++){x=(k%2?-2.7:2.7)+(Math.random()-.5)*.6;addPlatform(x,y+k*.18,z+k*(d+2.2),2.4,1,2.4,k%2?mats.block:mats.block2)}z+=3*(d+2.2)+gap*.5}else if(ptype==='movingX'){x=0;addPlatform(x,y,z,3.2,1,3.2,mats.moving,{moving:{axis:'x',amp:3.8+difficulty*1.0,speed:1.45+difficulty*.6,phase:i}});z+=3.2+gap+.7}else if(ptype==='stairs'){x=0;for(let k=0;k<4;k++)addPlatform((k%2?2.2:-2.2),y+k*.45,z+k*3.0,3.0,1,2.2,k%2?mats.block:mats.block2);z+=13.5+gap*.4}else if(ptype==='thin'){x=(Math.random()-.5)*3;addPlatform(x,y,z,2.1,1,5.1,mats.block2);addHazard(x+2.1,1.05,z,1.2,1.1,1.2,mats.danger,{moving:{axis:'x',amp:2.3,speed:2.4,phase:i}});z+=5.1+gap}else if(ptype==='vanish'){x=(i%2?-2.4:2.4);addPlatform(x,y,z,3.0,1,3.0,mats.vanish,{vanish:{period:1.8,off:.55,phase:i*.27},transparent:true,opacity:.88});addPlatform(-x*.55,y,z+3.6,2.8,1,2.8,mats.block);z+=7.2+gap*.7}else if(ptype==='zigzag'){for(let k=0;k<4;k++){x=[-3.2,1.6,-2.2,3.0][k];addPlatform(x,y,z+k*2.8,2.5,1,2.2,k%2?mats.block2:mats.block)}z+=12.5+gap*.5}else if(ptype==='movingY'){x=(i%2?-2.2:2.2);addPlatform(x,y,z,3.4,1,3.0,mats.moving,{moving:{axis:'y',amp:.9,speed:1.9,phase:i}});addPlatform(-x,y+.25,z+4.2,3.0,1,2.7,mats.block2);z+=8.0+gap*.65}else if(ptype==='ice'){x=0;for(let k=0;k<3;k++)addPlatform((k-1)*2.7,y,z+k*3.0,2.7,1,2.6,mats.ice,{ice:true});z+=10.0+gap*.45}else if(ptype==='split'){addPlatform(-3.6,y,z,2.4,1,3.2,mats.block);addPlatform(3.6,y,z,2.4,1,3.2,mats.block2);addPlatform(0,y+.2,z+4.6,2.8,1,3.1,mats.block);z+=8.1+gap*.6}else if(ptype==='highlow'){addPlatform(-2.8,y+.8,z,2.5,1,2.6,mats.block2);addPlatform(2.6,y-.25,z+3.2,2.7,1,2.7,mats.block);addPlatform(0,y+.55,z+6.4,2.6,1,2.6,mats.block2);z+=10.0+gap*.6}else if(ptype==='bars'){addPlatform(0,y,z,6.0,1,2.8,mats.block);addHazard(0,1.15,z+2.7,5.0,.55,.55,mats.orange,{moving:{axis:'x',amp:3.5,speed:2.8,phase:i}});addPlatform((i%2?-2.7:2.7),y,z+5.5,2.8,1,2.8,mats.block2);z+=9.0+gap*.75}if(i%10===8){cube(0,1.5,z-2,.35,3.0,.35,mats.checkpoint,world,false);cube(-5.8,1.3,z-2,.3,2.6,.3,mats.checkpoint,world,false);cube(5.8,1.3,z-2,.3,2.6,.3,mats.checkpoint,world,false)}}for(let dz=0;dz<z;dz+=30){cube(-15,-2,dz,5,4,8,mats.black,world,false);cube(15,-1.5,dz+12,6,3,10,mats.black,world,false)}}
+const playerGroup=new THREE.Group();scene.add(playerGroup);const body=cube(0,0,0,.9,1.3,.9,mats.player,playerGroup,true);body.position.y=.05;const head=new THREE.Mesh(new THREE.BoxGeometry(.62,.62,.62),mats.blue);head.position.set(0,.95,0);head.castShadow=true;head.receiveShadow=true;playerGroup.add(head);const eye1=new THREE.Mesh(new THREE.BoxGeometry(.11,.11,.04),mats.black);eye1.position.set(-.17,1.02,-.33);playerGroup.add(eye1);const eye2=eye1.clone();eye2.position.x=.17;playerGroup.add(eye2);
+let velocity=new THREE.Vector3(),onGround=false,currentPlatform=null,checkpoint={x:0,y:1.6,z:0};
+const keys={left:false,right:false,forward:false,back:false,jump:false};
+function keyName(e){return (e.key||'').toLowerCase()}
+function isControlKey(e){
+  const k=keyName(e);
+  return ['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Space','KeyA','KeyD','KeyW','KeyS'].includes(e.code)
+    || ['arrowleft','arrowright','arrowup','arrowdown',' ','spacebar','a','d','w','s'].includes(k);
+}
+function setKey(e,down){
+  if(!isControlKey(e))return;
+  e.preventDefault();
+  const k=keyName(e);
+  if(e.code==='ArrowLeft'||e.code==='KeyA'||k==='arrowleft'||k==='a')keys.left=down;
+  if(e.code==='ArrowRight'||e.code==='KeyD'||k==='arrowright'||k==='d')keys.right=down;
+  if(e.code==='ArrowUp'||e.code==='KeyW'||k==='arrowup'||k==='w')keys.forward=down;
+  if(e.code==='ArrowDown'||e.code==='KeyS'||k==='arrowdown'||k==='s')keys.back=down;
+  if(e.code==='Space'||k===' '||k==='spacebar')keys.jump=down;
+}
+window.addEventListener('keydown',e=>setKey(e,true),{passive:false});
+window.addEventListener('keyup',e=>setKey(e,false),{passive:false});
+document.addEventListener('keydown',e=>setKey(e,true),{passive:false});
+document.addEventListener('keyup',e=>setKey(e,false),{passive:false});const touch={joyX:0,joyY:0,jump:false};const joystickBase=$('joystickBase'),joystickKnob=$('joystickKnob');let joystickPointer=null;function updateJoystick(e){const r=joystickBase.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;let dx=e.clientX-cx,dy=e.clientY-cy;const max=r.width*.34,len=Math.hypot(dx,dy)||1;if(len>max){dx=dx/len*max;dy=dy/len*max}touch.joyX=dx/max;touch.joyY=dy/max;joystickKnob.style.transform=`translate(calc(-50% + ${dx}px),calc(-50% + ${dy}px))`}function resetJoystick(){joystickPointer=null;touch.joyX=0;touch.joyY=0;joystickKnob.style.transform='translate(-50%,-50%)'}joystickBase.addEventListener('pointerdown',e=>{joystickPointer=e.pointerId;joystickBase.setPointerCapture?.(e.pointerId);updateJoystick(e);e.preventDefault()},{passive:false});joystickBase.addEventListener('pointermove',e=>{if(e.pointerId!==joystickPointer)return;updateJoystick(e);e.preventDefault()},{passive:false});['pointerup','pointercancel','lostpointercapture'].forEach(ev=>joystickBase.addEventListener(ev,e=>{if(joystickPointer===null||e.pointerId===joystickPointer)resetJoystick();e.preventDefault()},{passive:false}));const jumpButton=$('jumpBtn');jumpButton.addEventListener('pointerdown',e=>{touch.jump=true;e.preventDefault()},{passive:false});['pointerup','pointerleave','pointercancel'].forEach(ev=>jumpButton.addEventListener(ev,e=>{touch.jump=false;e.preventDefault()},{passive:false}));function resetPlayer(){const s=game.lastSafe||checkpoint;playerGroup.position.set(s.x,s.y,s.z);velocity.set(0,0,0);onGround=false;currentPlatform=null;game.respawnCooldown=.25}function playerAABB(){const p=playerGroup.position;return{minX:p.x-PLAYER_HALF.x,maxX:p.x+PLAYER_HALF.x,minY:p.y-PLAYER_HALF.y,maxY:p.y+PLAYER_HALF.y,minZ:p.z-PLAYER_HALF.z,maxZ:p.z+PLAYER_HALF.z}}function boxOverlap(a,b){return a.minX<=b.maxX&&a.maxX>=b.minX&&a.minY<=b.maxY&&a.maxY>=b.minY&&a.minZ<=b.maxZ&&a.maxZ>=b.minZ}function platformBox(p){return{minX:p.mesh.position.x-p.w/2,maxX:p.mesh.position.x+p.w/2,minY:p.mesh.position.y-p.h/2,maxY:p.mesh.position.y+p.h/2,minZ:p.mesh.position.z-p.d/2,maxZ:p.mesh.position.z+p.d/2}}function hazardBox(h){return{minX:h.mesh.position.x-h.w/2,maxX:h.mesh.position.x+h.w/2,minY:h.mesh.position.y-h.h/2,maxY:h.mesh.position.y+h.h/2,minZ:h.mesh.position.z-h.d/2,maxZ:h.mesh.position.z+h.d/2}}
+function updateMoving(dt){for(const p of platforms){p.lastPos.copy(p.mesh.position);if(p.moving){const t=performance.now()/1000,v=Math.sin(t*p.moving.speed+(p.moving.phase||0))*p.moving.amp;if(p.moving.axis==='x')p.mesh.position.x=p.original.x+v;if(p.moving.axis==='y')p.mesh.position.y=p.original.y+v;if(p.moving.axis==='z')p.mesh.position.z=p.original.z+v}if(p.vanish){const t=(performance.now()/1000+(p.vanish.phase||0))%p.vanish.period,visible=t>p.vanish.off;p.mesh.visible=visible;if(p.mesh.material.opacity!==undefined)p.mesh.material.opacity=visible?.88:.18}p.delta.copy(p.mesh.position).sub(p.lastPos)}for(const h of hazards){if(h.moving){const t=performance.now()/1000,v=Math.sin(t*h.moving.speed+(h.moving.phase||0))*h.moving.amp;if(h.moving.axis==='x')h.mesh.position.x=h.original.x+v;if(h.moving.axis==='y')h.mesh.position.y=h.original.y+v;if(h.moving.axis==='z')h.mesh.position.z=h.original.z+v}if(h.rot)h.mesh.rotation.y+=dt*h.rot}}
+function physics(dt){if(game.state!=='runner')return;updateMoving(dt);
+const runSpeed=9.8, sideSpeed=7.2, backSpeed=3.8;
+const control=onGround?18:8;
+let targetX=0,targetZ=0;
+if(keys.left)targetX+=sideSpeed;
+if(keys.right)targetX-=sideSpeed;
+if(keys.forward)targetZ=runSpeed;
+if(keys.back)targetZ=-backSpeed;
+const joyDead=.12,jx=Math.abs(touch.joyX)>joyDead?touch.joyX:0,jy=Math.abs(touch.joyY)>joyDead?touch.joyY:0;
+if(jx)targetX+=(-jx)*sideSpeed;
+if(jy<0)targetZ=Math.max(targetZ,(-jy)*runSpeed);
+if(jy>0)targetZ=Math.min(targetZ,-jy*backSpeed);
+velocity.x+=(targetX-velocity.x)*Math.min(1,control*dt);
+velocity.z+=(targetZ-velocity.z)*Math.min(1,control*dt);
+if(!keys.left&&!keys.right&&!jx)velocity.x*=Math.pow(onGround?.72:.94,dt*60);
+if(!keys.forward&&!keys.back&&!jy)velocity.z*=Math.pow(onGround?.78:.96,dt*60);
+const maxSpeed=10.4;
+const hspeed=Math.hypot(velocity.x,velocity.z);
+if(hspeed>maxSpeed){velocity.x=velocity.x/hspeed*maxSpeed;velocity.z=velocity.z/hspeed*maxSpeed}if((keys.jump||touch.jump)&&onGround){velocity.y=9.2;onGround=false;currentPlatform=null}velocity.y-=GRAVITY*dt;if(currentPlatform&&onGround)playerGroup.position.add(currentPlatform.delta);const prevY=playerGroup.position.y;playerGroup.position.x+=velocity.x*dt;playerGroup.position.z+=velocity.z*dt;playerGroup.position.y+=velocity.y*dt;onGround=false;currentPlatform=null;const a=playerAABB();for(const p of platforms){if(!p.mesh.visible)continue;const b=platformBox(p),wasAbove=(prevY-PLAYER_HALF.y)>=b.maxY-.16;if(boxOverlap(a,b)&&velocity.y<=0&&wasAbove){playerGroup.position.y=b.maxY+PLAYER_HALF.y;velocity.y=0;onGround=true;currentPlatform=p;game.lastSafe={x:p.mesh.position.x,y:b.maxY+PLAYER_HALF.y+.06,z:p.mesh.position.z};break}}const pa=playerAABB();for(const h of hazards){if(boxOverlap(pa,hazardBox(h))){respawn('장애물 충돌!');return}}if(playerGroup.position.y<-9){respawn('낙하!');return}if(playerGroup.position.z>game.distance){game.distance=playerGroup.position.z;if(game.distance>game.best){game.best=game.distance;localStorage.setItem(SAVE_KEY,String(Math.floor(game.best)));ui.menuBest.textContent=`${Math.floor(game.best)}m`}}checkpoint=game.lastSafe||checkpoint;const camTarget=new THREE.Vector3(playerGroup.position.x,playerGroup.position.y+6.4,playerGroup.position.z-12.5);camera.position.lerp(camTarget,.20);camera.lookAt(playerGroup.position.x,playerGroup.position.y+1.0,playerGroup.position.z+9.5)}
+function respawn(text){if(game.respawnCooldown>0)return;showMessage(text,.55);resetPlayer()}function updateHud(){ui.correctCount.textContent=game.correct;ui.distanceNow.textContent=`${Math.floor(game.distance)}m`;ui.bestNow.textContent=`${Math.floor(game.best)}m`;if(game.state==='quiz'){ui.phaseTitle.textContent='문제 풀이';ui.mainTime.textContent=game.quizTime.toFixed(2);ui.quizTime.textContent=game.quizTime.toFixed(2);ui.progress.style.width=`${Math.max(0,Math.min(100,(30-game.quizTime)/30*100))}%`}else if(game.state==='runner'){ui.phaseTitle.textContent='극상 점프러너';ui.mainTime.textContent=game.runnerRemaining.toFixed(2);ui.progress.style.width=`${Math.max(0,Math.min(100,(1-game.runnerRemaining/Math.max(1,game.runnerTime))*100))}%`;ui.phaseTitle.textContent=(keys.forward||touch.joyY<-.12)?'극상 점프러너 · 전진':'극상 점프러너'}}function showMessage(text,dur=.9){ui.message.textContent=text;clearTimeout(showMessage.t);showMessage.t=setTimeout(()=>ui.message.textContent='',dur*1000)}function toast(text,dur=1.0){ui.toast.textContent=text;ui.toast.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>ui.toast.classList.remove('show'),dur*1000)}
+function startQuiz(){game.state='quiz';game.quizTime=30;game.runnerTime=0;game.runnerRemaining=0;game.correct=0;game.distance=0;game.nickname=cleanName();game.respawnCooldown=0;game.quizLocked=false;checkpoint={x:0,y:1.6,z:0};game.lastSafe={x:0,y:1.6,z:0};velocity.set(0,0,0);buildJumpMap();resetPlayer();ui.menu.classList.add('hidden');ui.result.classList.add('hidden');ui.hud.classList.remove('hidden');ui.quizPanel.classList.remove('hidden');ui.runnerIntro.classList.add('hidden');ui.mobileControls.classList.add('hidden');renderProblem();updateHud()}function endQuiz(){game.state='intro';game.runnerTime=game.correct*5;game.runnerRemaining=game.runnerTime;ui.quizPanel.classList.add('hidden');ui.earnedTime.textContent=`${game.runnerTime}초`;ui.runnerIntro.classList.remove('hidden');ui.phaseTitle.textContent='러너 준비';ui.mainTime.textContent=`${game.runnerTime.toFixed(2)}`;ui.progress.style.width='0%';if(game.runnerTime<=0)ui.runnerIntro.querySelector('p').innerHTML='맞힌 문제가 없어 러너 시간이 없습니다.<br>다시 도전해서 시간을 획득하세요.';else ui.runnerIntro.querySelector('p').innerHTML='작은 블록을 뛰어넘으며 최대한 멀리 가세요.<br>떨어지면 시작 지점으로 돌아오지만, 남은 시간 동안 계속 도전할 수 있습니다.'}function startRunner(){
+  if(game.runnerTime<=0){finishGame();return}
+  game.state='runner';
+  keys.left=keys.right=keys.forward=keys.back=keys.jump=false;resetJoystick();touch.jump=false;
+  ui.runnerIntro.classList.add('hidden');
+  ui.mobileControls.classList.remove('hidden');
+  renderer.domElement.setAttribute('tabindex','0');
+  renderer.domElement.focus();
+  showMessage('RUN!',.7);
+  resetPlayer();
+  updateHud();
+}function finishGame(){game.state='result';ui.quizPanel.classList.add('hidden');ui.runnerIntro.classList.add('hidden');ui.hud.classList.add('hidden');ui.mobileControls.classList.add('hidden');ui.result.classList.remove('hidden');ui.resultCorrect.textContent=`${game.correct}개`;ui.resultTimeEarned.textContent=`${game.runnerTime}초`;ui.resultDistance.textContent=`${Math.floor(game.distance)}m`;ui.resultBest.textContent=`${Math.floor(game.best)}m`;submitRank()}
+$('startBtn').onclick=startQuiz;$('runnerStartBtn').onclick=startRunner;$('retryBtn').onclick=startQuiz;$('homeBtn').onclick=()=>{game.state='menu';ui.result.classList.add('hidden');ui.menu.classList.remove('hidden')};ui.menuBest.textContent=`${Math.floor(game.best)}m`;ui.bestNow.textContent=`${Math.floor(game.best)}m`;loadRanking();let last=performance.now();function animate(now){const dt=Math.min(.033,(now-last)/1000);last=now;if(game.state==='quiz'){game.quizTime-=dt;if(game.quizTime<=0){game.quizTime=0;endQuiz()}updateHud()}else if(game.state==='runner'){game.runnerRemaining-=dt;if(game.respawnCooldown>0)game.respawnCooldown-=dt;physics(dt);if(game.runnerRemaining<=0){game.runnerRemaining=0;finishGame()}updateHud()}playerGroup.visible=game.state==='runner'||game.state==='intro'||game.state==='result';if(game.state!=='quiz')renderer.render(scene,camera);requestAnimationFrame(animate)}requestAnimationFrame(animate);addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+</script>
+</body>
+</html>
